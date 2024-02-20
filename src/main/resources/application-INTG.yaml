@@ -1,0 +1,87 @@
+environnement: ${MICROSERVICE_ENVIRONNEMENT:intg}
+
+# Paramétrage pour communiquer avec les autres APIs de la prévoyance
+prevoyance:
+  api:
+    name: API-CONSTANTE
+    url: ${PREV_API_URL:http://intgesb}
+    userKey: ${PREV_API_USERKEY:a4075pl56s64c3db599lq9ze174f7dq2}
+    consumers: ${PREV_API_CONSUMERS:API_PREV}
+    logErrorKey: ${PREV_API_LOGERRORKEY:6gu0depod998c3db594t6fE2774fmlf4}
+
+# Paramétrage permettant les accès aux services
+api:
+  poste: ${POSTE_LOCAL:developpeur}
+  authent:
+    constante: ${API_AUTHENT_CONSTANTE:WPREV|API_PREV|DEV}
+    constante.garantie: ${API_AUTHENT_CONSTANTE_GARANTIE:WPREV|API_PREV|DEV}
+    constante.produit: ${API_AUTHENT_CONSTANTE_PRODUIT:WPREV|API_PREV|DEV}
+    constante.risque: ${API_AUTHENT_CONSTANTE_RISQUE:WPREV|API_PREV|DEV}
+    password: ${API_AUTHENT_PASSWORD:WPREV*z4075db4d390c3db59982262774ezdf4|API_PREV*a4075pl56s64c3db599lq9ze174f7dq2|DEV*DEV}
+
+# Paramétrage de l'api
+application:
+  mvn:
+    artifactId: fr.aba.prevoyance/api-constante
+
+# Paramétrage du server
+server:
+  servlet:
+    contextPath: /prevoyance/constante/
+  port: 8099
+
+# Paramétrage swagger
+swagger:
+  host: localhost:8099
+  prevoyance:
+    title: Template
+
+spring:
+  # Paramétrage du JPA PostgreSQL
+  postgresql:
+    jpa:
+      properties:
+        hibernate:
+          temp:
+            use_jdbc_metadata_defaults: false
+          format_sql: ${JPA_POSTGRESQL_FORMAT_SQL:true}
+          default_schema: ${JPA_POSTGRESQL_DEFAULT_SCHEMA:prev}
+          use_sql_comments: ${JPA_POSTGRESQL_SQL_COMMENTS:true}
+          types:
+            print:
+              banner: false
+      hibernate:
+        showsql: ${JPA_POSTGRESQL_SHOW_SQL:true}
+        schema: ${JPA_POSTGRESQL_SCHEMA:prev}
+        hbm2ddl:
+          auto: none
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    # Paramétrage du Datasource PostgreSQL
+    datasource:
+      jdbc-url: ${DATA_SOURCE_POSTGRESQL_URL:jdbc:postgresql://fr-in-pazur-x:9411/prevIT}
+      username: ${DATA_SOURCE_POSTGRESQL_USER:dvptprev}
+      password: ${DATA_SOURCE_POSTGRESQL_PASSWORD:Pr3_v0y4nc3}
+      maximum-pool-size: ${DATA_SOURCE_POSTGRESQL_POOL_SIZE:1}
+      platform: postgres
+      driver-class-name: ${DATA_SOURCE_POSTGRESQL_DRIVER_CLASS_NAME:org.postgresql.Driver}
+  db2:
+    jpa:
+      hibernate:
+        dialect: org.hibernate.dialect.DB2Dialect
+        showsql: ${JPA_DB2_SHOW_SQL:true}
+        hbm2ddl:
+          auto: none
+        schema: ${JPA_DB2_SCHEMA:intg}
+    datasource:
+      driverClassName: ${DATA_SOURCE_DB2_DRIVER_CLASS_NAME:com.ibm.db2.jcc.DB2Driver}
+      jdbc-url: ${DATA_SOURCE_DB2_URL:jdbc:db2://PZD2:5001/DSNI:retrieveMessagesFromServerOnGetMessage=true;}
+      username: ${DATA_SOURCE_DB2_USER:INTAPI1}
+      maximum-pool-size: ${DATA_SOURCE_DB2_POOL_SIZE:1}
+      password: ${DATA_SOURCE_DB2_PASSWORD:API1710I}
+  main:
+    banner-mode: 'off'
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER

@@ -1,0 +1,44 @@
+environnement: ${MICROSERVICE_ENVIRONNEMENT:intg}
+
+# Paramétrage pour communiquer avec les autres APIs de la prévoyance
+prevoyance:
+  api:
+    name: API-CONSTANTE
+    url: ${PREV_API_URL:http://intgesb}
+    userKey: ${PREV_API_USERKEY:a4075pl56s64c3db599lq9ze174f7dq2}
+    consumers: ${PREV_API_CONSUMERS:API_PREV}
+    logErrorKey: ${PREV_API_LOGERRORKEY:6gu0depod998c3db594t6fE2774fmlf4}
+
+# Paramétrage permettant les accès aux services
+api:
+  poste: ${POSTE_LOCAL:developpeur}
+  authent:
+    constante: ${API_AUTHENT_CONSTANTE:WPREV|API_PREV|DEV}
+    constante.garantie: ${API_AUTHENT_CONSTANTE_GARANTIE:WPREV|API_PREV|DEV}
+    constante.produit: ${API_AUTHENT_CONSTANTE_PRODUIT:WPREV|API_PREV|DEV}
+    constante.risque: ${API_AUTHENT_CONSTANTE_RISQUE:WPREV|API_PREV|DEV}
+    password: ${API_AUTHENT_PASSWORD:WPREV*z4075db4d390c3db59982262774ezdf4|API_PREV*a4075pl56s64c3db599lq9ze174f7dq2|DEV*DEV}
+
+# Paramétrage de l'api
+application:
+  mvn:
+    artifactId: fr.aba.prevoyance/api-constante
+
+# Paramétrage du server
+server:
+  servlet:
+    contextPath: /prevoyance/constante/
+  port: 8099
+
+# Paramétrage swagger
+swagger:
+  host: localhost:8099
+  prevoyance:
+    title: Template
+
+spring:
+  main:
+    banner-mode: 'off'
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
