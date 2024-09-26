@@ -34,16 +34,15 @@ jobs:
           file_paths=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...origin/${{ github.event.pull_request.head.ref }})
           echo "$file_paths" > file_paths.txt  # Save to file to avoid multiline issues
 
-          # Set the outputs as environment variables using proper syntax
-          echo "diff<<EOF" >> $GITHUB_ENV
-          cat diff.txt >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          # Save the diff and file paths to environment variables correctly
+          echo "DIFF_CONTENT=$(cat diff.txt)" >> $GITHUB_ENV
+          echo "FILE_PATHS=$(cat file_paths.txt)" >> $GITHUB_ENV
 
-          echo "file_paths<<EOF" >> $GITHUB_ENV
-          cat file_paths.txt >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-
-
+      # Step 4: Print the diff and file paths for debugging
+      - name: Print PR Diff and File Paths for Debugging
+        run: |
+          echo "PR Diff: ${{ env.DIFF_CONTENT }}"
+          echo "Changed file paths: ${{ env.FILE_PATHS }}"
 
       # Step 5: Send Diff and File Paths to ReviewMyCode API
       - name: Send Diff and File Paths to ReviewMyCode API
@@ -53,12 +52,12 @@ jobs:
           -H "Content-Type: application/json" \
           -d @- <<EOF
           {
-            "diff": "${{ env.diff }}",
+            "diff": "${{ env.DIFF_CONTENT }}",
             "owner": "${{ github.repository_owner }}",
             "repo": "${{ github.event.pull_request.head.repo.name }}",
             "prNumber": "${{ github.event.pull_request.number }}",
             "commitId": "${{ github.event.pull_request.head.sha }}",
-            "file_paths": "${{ env.file_paths }}"
+            "file_paths": "${{ env.FILE_PATHS }}"
           }
           EOF
           echo "Request sent to backend"
